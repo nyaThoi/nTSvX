@@ -16,9 +16,10 @@ namespace nEShit
         [STAThread]
         static void Main()
         {
-            Console.WriteLine($"ShitStorm Tool for AK.TO");
-            Console.WriteLine($"Search GameProcess...");
+            Console.WriteLine($"nTSH Ported Versionn for Astral Realm Online Private Server");
+            Console.WriteLine($"Search GameProcess...\n");
             Pinvoke.GetCurrentProccess();
+            Console.WriteLine($"Enter the Number from the Game Process to Inject this Hack!");
 
             int.TryParse(Console.ReadLine(), out int msg);
             if (msg != 0)

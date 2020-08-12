@@ -25,16 +25,14 @@ public class WindowManager
     private IntPtr Pointer { get; set; }
     private enum windowTable
     {
-        sTable_AKTO = 0x4,
-        sTable_AKOS = 0x8,
-        vTable_AKTO = 0x20,
-        vTable_AKOS = 0x24
+               sTable_TSTO = 0xC,
+               vTable_TSTO = 0x24
     }
     private string WindowName
     {
         get
         {
-            return Memory.Reader.ReadSTDString(Pointer + (int)windowTable.sTable_AKTO, Encoding.UTF7);
+            return Memory.Reader.ReadSTDString(Pointer + (int)windowTable.sTable_TSTO, Encoding.UTF7);
         }
     }
     private static List<WindowManager> windowManagers
@@ -46,7 +44,7 @@ public class WindowManager
             IntPtr intPtr1 = intPtr;
             do
             {
-                IntPtr intPtr3 = Memory.Reader.Read<IntPtr>(intPtr1 + (int)windowTable.vTable_AKTO);
+                IntPtr intPtr3 = Memory.Reader.Read<IntPtr>(intPtr1 + (int)windowTable.vTable_TSTO);
                 if (intPtr3 != IntPtr.Zero)
                 {
                     list.Add(new WindowManager(intPtr3));
@@ -75,24 +73,9 @@ public class WindowManager
         Debug.WriteLine($"----- Beginn WND_INTERFACE -----");
         foreach (var window in windowManagers)
         {
-            Debug.WriteLine($"{window.WindowName}, {window.Pointer.ToString("X")}");
+            Console.WriteLine($"{window.WindowName}, {window.Pointer.ToString("X")}");
         }
         Debug.WriteLine($"----- end WND_INTERFACE -----");
-    }
-
-    public static Struct.EudemonExtendWindow GetEudemonExtendWindow
-    {
-        get
-        {
-            return new Struct.EudemonExtendWindow(WindowManager.GetWindowByName("EudemonExtendWnd").Pointer);
-        }
-    }
-    public static Struct.FishingWindow GetFishingWindow
-    {
-        get
-        {
-            return new Struct.FishingWindow(WindowManager.GetWindowByName("FishingWnd").Pointer);
-        }
     }
 
 }

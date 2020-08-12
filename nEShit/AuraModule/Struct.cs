@@ -26,28 +26,28 @@ namespace Struct
         {
             get
             {
-                return Memory.Reader.Read<uint>(Pointer + 0x8);
+                return Memory.Reader.Read<uint>(Pointer + 0x1C);
             }
         }
         public EntityInfo GetEntityInfo
         {
             get
             {
-                return new EntityInfo(Memory.Reader.Read<IntPtr>(Pointer + 0xC));
+                return new EntityInfo(Memory.Reader.Read<IntPtr>(Pointer + 0x20));
             }
         }
         public ModelInfo GetModelInfo
         {
             get
             {
-                return new ModelInfo(Memory.Reader.Read<IntPtr>(Pointer + 0x10));
+                return new ModelInfo(Memory.Reader.Read<IntPtr>(Pointer + 0x24));
             }
         }
         public ActorInfo GetActorInfo
         {
             get
             {
-                return new ActorInfo(Memory.Reader.Read<IntPtr>(Pointer + 0x30));
+                return new ActorInfo(Memory.Reader.Read<IntPtr>(Pointer + 0x40));
             }
         }
 
@@ -65,21 +65,6 @@ namespace Struct
         }
 
         #region ASM
-        private IntPtr Resurrection(int ReviveType)
-        {
-
-            string[] mnemonics =
-                nMnemonics.localPlayer.Resurrection(ReviveType, MemoryStore.PLAYER_Resurrection);
-
-            return Memory.Assemble.Execute<IntPtr>(mnemonics, "Revive");
-            //return Memory.Assemble.InjectAndExecute(mnemonics);
-
-        }
-        public void FullResurrection()
-        {
-            if (IsValid && GetEntityInfo.IsValid && GetEntityInfo.currentHP == 0)
-                Resurrection(0);
-        }
         private IntPtr DoUIAction(int slotType)
         {
             string[] mnemonics =
@@ -127,25 +112,32 @@ namespace Struct
         {
             get
             {
-                return Memory.Reader.Read<uint>(Pointer + 0x8);
+                return Memory.Reader.Read<uint>(Pointer + 0xD0);
+            }
+        }
+        public uint maxHP
+        {
+            get
+            {
+                return Memory.Reader.Read<uint>(Pointer + 0xD8);
             }
         }
         public uint level
         {
             get
             {
-                return Memory.Reader.Read<uint>(Pointer + 0x10);
+                return Memory.Reader.Read<uint>(Pointer + 0x14);
             }
         }
         public float MovementValue
         {
             get
             {
-                return Memory.Reader.Read<float>(Pointer + 0x14);
+                return Memory.Reader.Read<float>(Pointer + 0x2C);
             }
             set
             {
-                Memory.Writer.Write<float>(Pointer + 0x14, value);
+                Memory.Writer.Write<float>(Pointer + 0x2C, value);
             }
 
 
@@ -154,21 +146,15 @@ namespace Struct
         {
             get
             {
-                return Memory.Reader.ReadSTDString(Pointer + 0x128, Encoding.UTF7);
+                return Memory.Reader.ReadSTDString(Pointer + 0x17C, Encoding.UTF7);
             } 
         }
-        public uint fishingDurability
-        {
-            get
-            {
-                return Memory.Reader.Read<uint>(Pointer + 0xEC);
-            }
-        }
+
         public IntPtr inventoryPtr
         {
             get
             {
-                return Memory.Reader.Read<IntPtr>(Pointer + 0x540);
+                return Memory.Reader.Read<IntPtr>(Pointer + 0x3E4);
             }
         }
 
@@ -191,10 +177,20 @@ namespace Struct
         {
             get
             {
-                return Memory.Reader.Read<uint>(Pointer + 0x1F4) != 0u;
+                return Memory.Reader.Read<uint>(Pointer + 0x234) != 0u;
             }
         }
-
+        public float SetHeight
+        {
+            get
+            {
+                return Memory.Reader.Read<float>(Pointer + 0x18C);
+            }
+            set
+            {
+                Memory.Writer.Write<float>(Pointer + 0x18C, value);
+            }
+        }
     }
     public class ActorInfo
     {
@@ -230,40 +226,37 @@ namespace Struct
         {
             get
             {
-                return Memory.Reader.Read<short>(Pointer + 0x8);
+                return Memory.Reader.Read<short>(Pointer + 0x6);
             }
         }
-
-    }
-    public class Eudemon
-    {
-        public Eudemon(IntPtr intPtr)
-        {
-            Pointer = intPtr;
-        }
-        public IntPtr Pointer { get; set; }
-        public bool IsValid
+        public bool onMap
         {
             get
             {
-                return Pointer != IntPtr.Zero;
+                return mapID > 0;
             }
         }
-        public uint currentPM
+        public bool charSelection
         {
             get
             {
-                return Memory.Reader.Read<uint>(Pointer + 0x124);
+                return mapID == 0x63;
             }
         }
-        public short chatAttempts
+        public bool mapMeridia
         {
             get
             {
-                return Memory.Reader.Read<short>(Pointer + 0x128);
+                return mapID == 0x64;
             }
         }
-
+        public bool mapWesternContinent
+        {
+            get
+            {
+                return mapID == 0x65;
+            }
+        }
     }
 
     #region Inventory
@@ -394,270 +387,6 @@ namespace Struct
     #endregion
 
     #region WindowManager Struct
-    public class EudemonExtendWindow
-    {
-        public EudemonExtendWindow(IntPtr intPtr)
-        {
-            WndPointer = intPtr;
-        }
-        public IntPtr WndPointer { get; set; }
-        private bool IsValid
-        {
-            get
-            {
-                return WndPointer != IntPtr.Zero;
-            }
-        }
-
-        private readonly int[] bestMessageIDs = new int[]
-{
-            0x36,
-            0xd8,
-            0xd9
-};
-        private enum EudemonAction
-        {
-            EA_TALK = 1,
-            EA_MEDITATION = 2,
-            EA_RETRIEVE = 4
-        };
-        private Struct.Eudemon GetEudemonBySlot(int slotID)
-        {
-            if (slotID < 0 || slotID > 3) 
-                return new Struct.Eudemon(IntPtr.Zero);
-            string[] mnemonics =
-                nMnemonics.eudemon.GetEudemonBySlot(MemoryStore.TARGETING_COLLECTIONS_BASE, MemoryStore.GET_LOCAL_PLAYER, slotID, MemoryStore.EUDEMON_GETEUDEMON_FUNCTION);
-
-            return new Struct.Eudemon(Memory.Assemble.Execute<IntPtr>(mnemonics, "Eudemon - GetEudemonBySlot"));
-            //return new Struct.Eudemon(Memory.Assemble.InjectAndExecute(mnemonics));
-        }
-        private bool TryEudemonAction(int slotID, EudemonAction action)
-        {
-            int arg1 = 0;
-            Random random = new Random();
-            Struct.Eudemon eudemon = GetEudemonBySlot(slotID);
-            if (eudemon.Pointer == IntPtr.Zero) return false;
-            switch (action)
-            {
-                case EudemonAction.EA_TALK:
-                    if (eudemon.chatAttempts == 0 /*|| eudemon.chatAttempts == 99*/)
-                        return false;
-                    //		LogMessage(Eidolons, StringFormat("Talking to eidolon at slot %d.", slotID + 1));
-                    Console.WriteLine($"[EAL]: Talking to eidolon at slot {slotID + 1}");
-                    arg1 = bestMessageIDs[random.Next(bestMessageIDs.Length)];
-                    break;
-                case EudemonAction.EA_MEDITATION:
-                    if (eudemon.currentPM < 10)
-                        return false;
-                    //		LogMessage(Eidolons, StringFormat("Linking eidolon at slot %d.", slotID + 1));
-                    Console.WriteLine($"[EAL]: Linking eidolon at slot {slotID + 1}");
-                    break;
-                case EudemonAction.EA_RETRIEVE:
-                    //		LogMessage(Eidolons, StringFormat("Retrieving object from eidolon at slot %d.", slotID + 1));
-                    Console.WriteLine($"[EAL]: Retrieving object from eidolon at slot {slotID + 1}");
-                    break;
-            }
-            string[] mnemonics =
-                nMnemonics.eudemon.TryEudemonAction(eudemon.Pointer, (int)action, arg1, MemoryStore.EUDEMON_SENDCOMMAND_FUNCTION);
-
-            Memory.Assemble.Execute<IntPtr>(mnemonics, "Eudemon - TryEudemonAction");
-            //Memory.Assemble.InjectAndExecute(mnemonics);
-            return true;
-        }
-        private bool IsEudemonMeditating(int slotID)
-        {
-            int rt = 0;
-            string[] mnemonics =
-                nMnemonics.eudemon.IsEudemonMeditating(MemoryStore.TARGETING_COLLECTIONS_BASE, MemoryStore.GET_LOCAL_PLAYER, slotID, MemoryStore.EUDEMON_ISMEDITATING_FUNCTION);
-
-            rt = Memory.Assemble.Execute<int>(mnemonics, "Eudemon - IsEudemonMeditating");
-            //rt = (int)Memory.Assemble.InjectAndExecute(mnemonics);
-            return rt == 1;
-        }
-        private bool HasEudemonGift(int slotID)
-        {
-            int rt = 0;
-            string[] mnemonics =
-                nMnemonics.eudemon.HasEudemonGift(MemoryStore.TARGETING_COLLECTIONS_BASE, MemoryStore.GET_LOCAL_PLAYER, slotID, MemoryStore.EUDEMON_HASGIFT_FUNCTION);
-
-            rt = Memory.Assemble.Execute<int>(mnemonics, "Eudemon - HasEudemonGift");
-            //rt = (int)Memory.Assemble.InjectAndExecute(mnemonics);
-            return rt == 1;
-        }
-        public void UpdateEudemons(bool localPlayerCheck = false)
-        {
-            if (localPlayerCheck)
-                if (!AuraModule.Utils.IsInGame() || AuraModule.Utils.locPlayer.GetEntityInfo.level <= 1)
-                    return;
-
-            if (!IsValid) return;
-
-            for (int i = 0; i < 4; ++i)
-            {
-                if (!IsEudemonMeditating(i))
-                {
-                    if (HasEudemonGift(i))
-                    {
-                        if (TryEudemonAction(i, EudemonAction.EA_RETRIEVE))
-                            break;
-                    }
-                    if (!TryEudemonAction(i, EudemonAction.EA_TALK))
-                    {
-                        if (TryEudemonAction(i, EudemonAction.EA_MEDITATION))
-                            break;// only 1 meditation start at a time
-                    }
-                    else// 1 talk only at a time
-                        break;
-                }
-            }
-        }
-
-    }
-    public class FishingWindow
-    {
-        public FishingWindow(IntPtr intPtr)
-        {
-            WndPointer = intPtr;
-        }
-        public IntPtr WndPointer { get; set; }
-        public bool IsValid
-        {
-            get
-            {
-                return WndPointer != IntPtr.Zero;
-            }
-        }
-        private float blueRangeMax
-        {
-            get
-            {
-                return Memory.Reader.Read<float>(WndPointer + 0x240);
-            }
-            set
-            {
-                Memory.Writer.Write<float>(WndPointer + 0x240, value);
-            }
-        }
-        private float blueRangeMin
-        {
-            get
-            {
-                return Memory.Reader.Read<float>(WndPointer + 0x244);
-            }
-            set
-            {
-                Memory.Writer.Write<float>(WndPointer + 0x244, value);
-            }
-        }
-        private float currentLine
-        {
-            get
-            {
-                return Memory.Reader.Read<float>(WndPointer + 0x260);
-            }
-            set
-            {
-                Memory.Writer.Write<float>(WndPointer + 0x260, value);
-            }
-        }
-        private float blueCenterValue
-        {
-            get
-            {
-                return (blueRangeMin + blueRangeMax) / 2f;
-
-            }
-        }
-        private AuraModule.FishingState fishingState
-        {
-            get
-            {
-                return (AuraModule.FishingState)Memory.Reader.Read<byte>(WndPointer + 0x210);
-            }
-        }
-        public void setBlueRangeHack()
-        {
-            if (!IsValid) return;
-            blueRangeMax = 0f;
-            blueRangeMin = 1000f;
-        }
-        public void setCenterLineValue()
-        {
-            if (!IsValid) return;
-            currentLine = blueCenterValue;
-        }
-        private void SetNextState()
-        {
-            //Check FishingWnd is Valid
-            if (!IsValid)
-                return;
-
-            //Create AllocateMemory
-            IntPtr AllocateMemory = Memory.Allocator.Allocate(32);
-
-            //Check AllocteMemory if null or zero return
-            if (AllocateMemory == null || AllocateMemory == IntPtr.Zero)
-                return;
-            string[] mnemonics =
-                nMnemonics.fishing.SetNextState(AllocateMemory, WndPointer, MemoryStore.FISHING_SetNextState);
-
-            //Part of execute mnemonics
-            Memory.Assemble.Execute<IntPtr>(mnemonics, "SetNextState");
-
-            //Dispose Allocate Memory
-            if(AllocateMemory != IntPtr.Zero)
-                Memory.Allocator.DisposeAlloc(AllocateMemory);
-        }
-        private void ExitState()
-        {
-            //Check FishingWnd is Valid
-            if (!IsValid)
-                return;
-
-            //Create AllocateMemory
-            IntPtr AllocateMemory = Memory.Allocator.Allocate(32);
-
-            //Check AllocteMemory if null or zero return
-            if (AllocateMemory == null || AllocateMemory == IntPtr.Zero)
-                return;
-
-            string[] mnemonics =
-                nMnemonics.fishing.StopFishing(AllocateMemory, WndPointer, MemoryStore.FISHING_ExitState);
-
-            //Part of execute mnemonics
-            Memory.Assemble.Execute<IntPtr>(mnemonics, "ExitState");
-
-            //Dispose Allocate Memory
-            if (AllocateMemory != IntPtr.Zero)
-                Memory.Allocator.DisposeAlloc(AllocateMemory);
-        }
-        public void Update()
-        {
-            if (!IsValid) return;
-            switch(fishingState)
-            {
-                case AuraModule.FishingState.Idle:
-                    SetNextState();
-
-                    break;
-                case AuraModule.FishingState.Baiting:
-
-                    return;
-                case AuraModule.FishingState.AutomaticFishing:
-                    SetNextState();
-
-                    return;
-                case AuraModule.FishingState.ActiveFishing:
-                    setBlueRangeHack();
-
-                    return;
-                case AuraModule.FishingState.EndAnimation:
-
-                    return;
-            }
-                
-        }
-    }
 
     #endregion
 }

@@ -36,14 +36,4 @@ namespace AuraModule
 	};
     #endregion
 
-    #region FISHING
-	public enum FishingState
-	{
-		Idle,
-		Baiting,
-		AutomaticFishing,
-		ActiveFishing,
-		EndAnimation
-	}
-    #endregion
 }
