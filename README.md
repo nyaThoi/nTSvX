@@ -1,18 +1,12 @@
-# nEShit
-External Hack for AK.TO
+# nTSvX
+External Hack for TS.TO
 
 ![Image description](http://i.epvpimg.com/WqV9gab.png)!
 
 Features
 - Speedhack with Trackbar
-- Auto Resurrection Mode
 - Teleport Interface
 
-- Fishing:
--- Blue Range Hack (Helper Tool)
-
-- Eidolon Auto Link without Inventory Check 
-(https://github.com/AlainProvist/EAL)
 
 
 Bugs:
