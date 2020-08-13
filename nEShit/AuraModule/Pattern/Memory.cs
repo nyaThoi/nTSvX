@@ -54,6 +54,7 @@ public class Load_Pattern
         Debug.WriteLine($"CURRENT_MAP_BASE 0x{MemoryStore.CURRENT_MAP_BASE.ToString("X")}\n");
 
         Debug.WriteLine($"PLAYER_DoUIAction 0x{MemoryStore.PLAYER_DoUIAction.ToString("X")}\n");
+        Debug.WriteLine($"CAMERA_ACCESS_OFFSET 0x{MemoryStore.CAMERA_ACCESS_OFFSET.ToString("X")}\n");
 
         Debug.WriteLine($"----- End -----");
 #endif
@@ -66,7 +67,9 @@ public class Load_Pattern
             MemoryStore.WND_INTERFACE_BASE == IntPtr.Zero ||
             MemoryStore.CURRENT_MAP_BASE == IntPtr.Zero ||
 
-            MemoryStore.PLAYER_DoUIAction == IntPtr.Zero
+            MemoryStore.PLAYER_DoUIAction == IntPtr.Zero ||
+
+            MemoryStore.CAMERA_ACCESS_OFFSET == IntPtr.Zero
 
             )
             return true;
