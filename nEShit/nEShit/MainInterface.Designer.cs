@@ -35,6 +35,8 @@
             this.btn_teleportInterface = new System.Windows.Forms.Button();
             this.speedhack = new System.Windows.Forms.CheckBox();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.flyhack_btn = new System.Windows.Forms.CheckBox();
+            this.zoomlimiter_btn = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -99,11 +101,37 @@
             this.trackBar1.TabIndex = 7;
             this.trackBar1.Value = 15;
             // 
+            // flyhack_btn
+            // 
+            this.flyhack_btn.AutoSize = true;
+            this.flyhack_btn.Checked = true;
+            this.flyhack_btn.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.flyhack_btn.Location = new System.Drawing.Point(12, 35);
+            this.flyhack_btn.Name = "flyhack_btn";
+            this.flyhack_btn.Size = new System.Drawing.Size(65, 17);
+            this.flyhack_btn.TabIndex = 8;
+            this.flyhack_btn.Text = "FlyHack";
+            this.flyhack_btn.UseVisualStyleBackColor = true;
+            // 
+            // zoomlimiter_btn
+            // 
+            this.zoomlimiter_btn.AutoSize = true;
+            this.zoomlimiter_btn.Checked = true;
+            this.zoomlimiter_btn.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.zoomlimiter_btn.Location = new System.Drawing.Point(12, 12);
+            this.zoomlimiter_btn.Name = "zoomlimiter_btn";
+            this.zoomlimiter_btn.Size = new System.Drawing.Size(86, 17);
+            this.zoomlimiter_btn.TabIndex = 9;
+            this.zoomlimiter_btn.Text = "Zoom Limiter";
+            this.zoomlimiter_btn.UseVisualStyleBackColor = true;
+            // 
             // MainInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(295, 196);
+            this.Controls.Add(this.zoomlimiter_btn);
+            this.Controls.Add(this.flyhack_btn);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.speedhack);
             this.Controls.Add(this.btn_teleportInterface);
@@ -126,6 +154,8 @@
         private System.Windows.Forms.Button btn_teleportInterface;
         private System.Windows.Forms.CheckBox speedhack;
         private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.CheckBox flyhack_btn;
+        private System.Windows.Forms.CheckBox zoomlimiter_btn;
     }
 }
 

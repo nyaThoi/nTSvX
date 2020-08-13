@@ -44,6 +44,24 @@ namespace AuraModule
             IntPtr cw = Memory.Reader.Read<IntPtr>(MemoryStore.CURRENT_MAP_BASE);
             return new Struct.CurrentMap(cw);
         }
+        private static Struct.CameraStruct GetCurrentCamera(/* = CAERA_ACCESS_OFFSET*/)
+        {
+            if (MemoryStore.CAMERA_ACCESS_OFFSET == IntPtr.Zero)
+                return new Struct.CameraStruct(IntPtr.Zero);
+            IntPtr cao = Memory.Reader.Read<IntPtr>(MemoryStore.CAMERA_ACCESS_OFFSET);
+            return new Struct.CameraStruct(cao);
+        }
+        public static void ZoomLimiter (bool state)
+        {
+            Struct.CameraStruct cam = GetCurrentCamera();
+
+            if (!cam.IsValid)
+                return;
+            if (state)
+                cam.Limiter = (float)0x3E8;
+            else
+                cam.Limiter = (float)0x11;
+        }
         public static bool IsInGame()
         {
             Struct.CurrentMap curMap = GetCurrentMap();
@@ -52,7 +70,6 @@ namespace AuraModule
                 locPlayer = ASM.GetLocalPlayer();
                 if (locPlayer.IsValid)
                     return locPlayer.GetEntityInfo.IsValid && locPlayer.GetModelInfo.IsValid && locPlayer.GetActorInfo.IsValid && locPlayer.GetEntityInfo.charName != "";
-
             }
             return false;
         }

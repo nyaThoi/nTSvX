@@ -16,6 +16,8 @@ public class MemoryStore
     public static IntPtr DETOUR_MAIN_LOOP_OFFSET = IntPtr.Zero;
 
     public static IntPtr PLAYER_DoUIAction = IntPtr.Zero;
+
+    public static IntPtr CAMERA_ACCESS_OFFSET = IntPtr.Zero;
 }
 public class Load_Pattern
 {
@@ -31,6 +33,8 @@ public class Load_Pattern
         MemoryStore.CURRENT_MAP_BASE = PatternManager.FindPatternAlain(gameproc, "8b 0d ? ? ? ? 89 4e ? 89 35", 1, 1, PatternManager.MemoryType.RT_READNEXT4_BYTES_RAW);
         
         MemoryStore.PLAYER_DoUIAction = PatternManager.FindPatternAlain(gameproc, "e8 ? ? ? ? 83 c4 ? b0 ? c3 cc cc cc cc 55", 0, 1, PatternManager.MemoryType.RT_READNEXT4_BYTES);
+
+        MemoryStore.CAMERA_ACCESS_OFFSET = PatternManager.FindPatternAlain(gameproc, "89 35 ? ? ? ? 5e b0", 1, 1, PatternManager.MemoryType.RT_READNEXT4_BYTES_RAW);
 
     }
 

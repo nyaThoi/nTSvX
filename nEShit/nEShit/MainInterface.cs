@@ -38,7 +38,12 @@ namespace nEShit
             // Set Movement Value in Float
             if(speedhack.Checked)
                 AuraModule.Utils.locPlayer.SetMovementValue((float)trackBar1.Value);
-        
+            // Set Height for FlyHack
+            if (flyhack_btn.Checked)
+                AuraModule.Utils.locPlayer.SetHeight();
+            // Increase Zoom Limiter for Camera Hack
+            if (zoomlimiter_btn.Checked)
+                AuraModule.Utils.ZoomLimiter(true);
         }
 
         private void cb_loop_CheckedChanged(object sender, EventArgs e)

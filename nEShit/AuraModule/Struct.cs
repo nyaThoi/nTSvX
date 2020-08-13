@@ -93,6 +93,11 @@ namespace Struct
             }
             return GetEntityInfo.MovementValue;
         }
+        public void SetHeight(float val = 1000)
+        {
+            if(IsValid && GetModelInfo.IsValid && GetModelInfo.Height != 0)
+                GetModelInfo.Height = val;
+        }
     }
     public class EntityInfo
     {
@@ -180,7 +185,7 @@ namespace Struct
                 return Memory.Reader.Read<uint>(Pointer + 0x234) != 0u;
             }
         }
-        public float SetHeight
+        public float Height
         {
             get
             {
@@ -386,6 +391,42 @@ namespace Struct
     }
     #endregion
 
+    #region Camera
+    public class CameraStruct
+    {
+        public CameraStruct(IntPtr intPtr)
+        {
+            Pointer = intPtr;
+        }
+        public IntPtr Pointer { get; set; }
+        public bool IsValid
+        {
+            get
+            {
+                return Pointer != IntPtr.Zero;
+            }
+        }
+        public float Limiter
+        {
+            get
+            {
+                return Memory.Reader.Read<float>(Pointer + 0x54);
+            }
+            set
+            {
+                Memory.Writer.Write<float>(Pointer + 0x54, value);
+            }
+        }
+        public float LimiterValue
+        {
+            get
+            {
+                return Memory.Reader.Read<float>(Pointer + 0x58);
+            }
+        }
+    }
+
+    #endregion
     #region WindowManager Struct
 
     #endregion
